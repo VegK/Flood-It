@@ -37,9 +37,19 @@ public class FieldController : MonoBehaviour
 		}
 	}
 	
-	private void Update()
+	private void OnDrawGizmos()
 	{
-	
+		Gizmos.color = Color.red;
+		for (int x = 0; x < Width; x++)
+		{
+			for (int y = 0; y < Height; y++)
+			{
+				var pos = transform.position;
+				pos.x += x;
+				pos.y += y;
+				Gizmos.DrawWireCube(pos, Vector2.one);
+			}
+		}
 	}
 	#endregion
 	#endregion
