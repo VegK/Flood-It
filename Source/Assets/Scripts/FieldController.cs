@@ -23,6 +23,9 @@ public class FieldController : MonoBehaviour
 	#region Private
 	private void Start()
 	{
+		var indentX = (float)Width / 2 - 0.5f;
+		var indentY = (float)Height / 2 - 0.5f;
+
 		_cells = new Cell.CellController[Width, Height];
 		for (int x = 0; x < Width; x++)
 		{
@@ -31,7 +34,12 @@ public class FieldController : MonoBehaviour
 				var obj = Instantiate(PrefabCell);
 				obj.transform.SetParent(transform, false);
 				obj.name = "Cell " + x + ":" + y;
-				obj.transform.position = new Vector3(x, y, transform.position.z);
+
+				var pos = transform.position;
+				pos.x += x - indentX;
+				pos.y += y - indentY;
+				obj.transform.position = pos;
+
 				_cells[x, y] = obj;
 			}
 		}
@@ -40,13 +48,16 @@ public class FieldController : MonoBehaviour
 	private void OnDrawGizmos()
 	{
 		Gizmos.color = Color.red;
+
+		var indentX = (float)Width / 2 - 0.5f;
+		var indentY = (float)Height / 2 - 0.5f;
 		for (int x = 0; x < Width; x++)
 		{
 			for (int y = 0; y < Height; y++)
 			{
 				var pos = transform.position;
-				pos.x += x;
-				pos.y += y;
+				pos.x += x - indentX;
+				pos.y += y - indentY;
 				Gizmos.DrawWireCube(pos, Vector2.one);
 			}
 		}
