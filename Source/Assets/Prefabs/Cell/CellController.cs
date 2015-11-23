@@ -13,8 +13,7 @@ namespace Cell
 
 		public float SpeedRotation = 120f;
 		
-		[HideInInspector]
-		public bool TopSide = true;
+		public bool TopSide { get; private set; }
 		#endregion
 		#region Private
 		private CellRotation _rotation;
@@ -34,6 +33,7 @@ namespace Cell
 		#region Private
 		private void Awake()
 		{
+			TopSide = true;
 			_rotation = BaseCell.GetComponent<CellRotation>();
 			_color = BaseCell.GetComponent<CellColor>();
 		}
