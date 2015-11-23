@@ -43,8 +43,40 @@ public class FieldController : MonoBehaviour
 				_cells[x, y] = obj;
 			}
 		}
+
+		StartCoroutine(PaintCells());
 	}
-	
+
+	private IEnumerator PaintCells()
+	{
+		while (Time.time < 1)
+			yield return null;
+
+		var arrColor = new Color[] { Color.red, Color.green, Color.blue };
+
+		for (int x = 0; x <= Width; x++)
+		{
+			for (int z = 0; z < x; z++)
+			{
+				var y = Height - x + z;
+				if (y >= 0)
+					_cells[z, y].SetColor(arrColor[Random.Range(0, arrColor.Length)]);
+			}
+			yield return new WaitForSeconds(0.1f);
+		}
+
+		for (int y = Height - 1; y >= 0; y--)
+		{
+			for (int z = 0; z < y; z++)
+			{
+				var x = Width - y + z;
+				if (x >= 0)
+					_cells[x, z].SetColor(arrColor[Random.Range(0, arrColor.Length)]);
+			}
+			yield return new WaitForSeconds(0.1f);
+		}
+	}
+
 	private void OnDrawGizmos()
 	{
 		Gizmos.color = Color.red;

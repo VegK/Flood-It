@@ -24,7 +24,12 @@ namespace Cell
 
 		#region Methods
 		#region Public
-
+		public void SetColor(Color color)
+		{
+			_color.SetColor(color);
+			_rotation.Rotate(SpeedRotation);
+			TopSide = !TopSide;
+		}
 		#endregion
 		#region Private
 		private void Awake()
@@ -35,12 +40,7 @@ namespace Cell
 
 		private void OnMouseDown()
 		{
-			var arrColor = new Color[] { Color.red, Color.green, Color.cyan, Color.yellow, Color.black, Color.gray, Color.blue, Color.magenta };
-			_color.SetColor(arrColor[Random.Range(0, 8)]);
-
-			_rotation.Rotate(SpeedRotation);
-
-			TopSide = !TopSide;
+			
 		}
 		#endregion
 		#endregion
