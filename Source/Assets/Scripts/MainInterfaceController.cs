@@ -4,53 +4,53 @@ using UnityEngine.UI;
 
 public class MainInterfaceController : MonoBehaviour
 {
+	public event EventHandler RestartEvent;
+
 	#region Properties
 	#region Public
-	public Text UISteps;
-	public Text UITime;
+	[Header("Game interface")]
+	public GameObject UIPanelGI;
+	public Text UIStepsGI;
+	public Text UITimeGI;
+	[Header("Game over")]
+	public GameObject UIPanelGO;
+	public Text UIStepsGO;
+	public Text UITimeGO;
 
 	public static MainInterfaceController Instance;
 
-	public event EventHandler RestartEvent;
-
 	public int Steps
 	{
-		get
-		{
-			return _steps;
-		}
 		set
 		{
-			_steps = value;
-			UISteps.text = "Steps: " + _steps;
+			UIStepsGI.text = value.ToString();
 		}
 	}
 	public int Time
 	{
-		get
-		{
-			return _time;
-		}
 		set
 		{
-			_time = value;
-			UITime.text = "Time: " + _time + " sec";
+			var ts = new TimeSpan(0, 0, value);
+			var min = ts.Minutes.ToString("D2");
+			var sec = ts.Seconds.ToString("D2");
+			UITimeGI.text = min + ":" + sec;
 		}
 	}
 	#endregion
 	#region Private
-	private int _steps;
-	private int _time;
+	
 	#endregion
 	#endregion
 
 	#region Methods
 	#region Public
-	public void Show(int steps, int time)
+	public void ShowGameOver(int steps, int time)
 	{
-		Steps = steps;
-		Time = time;
-		gameObject.SetActive(true);
+		UIPanelGI.gameObject.SetActive(false);
+
+		UIStepsGO.text = "Steps: " + steps;
+		UITimeGO.text = "Time: " + time + " sec";
+		UIPanelGO.gameObject.SetActive(true);
 	}
 
 	public void OnClickRestart()
@@ -59,14 +59,22 @@ public class MainInterfaceController : MonoBehaviour
 			return;
 		RestartEvent(this, null);
 
-		gameObject.SetActive(false);
+		Steps = 0;
+		Time = 0;
+		UIPanelGI.gameObject.SetActive(true);
+
+		UIPanelGO.gameObject.SetActive(false);
 	}
 	#endregion
 	#region Private
 	private void Awake()
 	{
 		Instance = this;
-		gameObject.SetActive(false);
+
+		Steps = 0;
+		Time = 0;
+
+		UIPanelGO.gameObject.SetActive(false);
 	}
 	#endregion
 	#endregion

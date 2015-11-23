@@ -49,7 +49,6 @@ public class FieldController : MonoBehaviour
 	private void CreateField()
 	{
 		_steps = 0;
-		_timeStart = Time.time;
 
 		var indentX = (float)Width / 2 - 0.5f;
 		var indentY = (float)Height / 2 - 0.5f;
@@ -114,6 +113,8 @@ public class FieldController : MonoBehaviour
 		}
 
 		_lockClick = false;
+		_timeStart = Time.time;
+		StartCoroutine(Timer());
 	}
 
 	private IEnumerator PaintCell(Color color)
@@ -216,6 +217,8 @@ public class FieldController : MonoBehaviour
 			return;
 
 		_steps++;
+		MainInterfaceController.Instance.Steps = _steps;
+
 		StartCoroutine(PaintCell(cell.Color));
 	}
 
@@ -232,9 +235,22 @@ public class FieldController : MonoBehaviour
 		if (countColor < Width * Height)
 			return;
 
+		StopCoroutine(Timer());
 		var time = Time.time - _timeStart;
-		MainInterfaceController.Instance.Show(_steps, (int)time);
+		MainInterfaceController.Instance.ShowGameOver(_steps, (int)time);
 	}
+
+	private IEnumerator Timer()
+	{
+		while (true)
+		{
+			yield return new WaitForSeconds(1);
+
+			var time = Time.time - _timeStart;
+			MainInterfaceController.Instance.Time = (int)time;
+		}
+	}
+
 	private void OnDrawGizmos()
 	{
 		Gizmos.color = Color.red;
