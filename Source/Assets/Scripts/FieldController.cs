@@ -40,14 +40,17 @@ public class FieldController : MonoBehaviour
 				pos.y += y - indentY;
 				obj.transform.position = pos;
 
+				obj.MouseDown += CellMouseDown;
+				obj.X = x;
+				obj.Y = y;
 				_cells[x, y] = obj;
 			}
 		}
 
-		StartCoroutine(PaintCells());
+		StartCoroutine(PaintCellsRandomColors());
 	}
 
-	private IEnumerator PaintCells()
+	private IEnumerator PaintCellsRandomColors()
 	{
 		while (Time.time < 1)
 			yield return null;
@@ -75,6 +78,90 @@ public class FieldController : MonoBehaviour
 			}
 			yield return new WaitForSeconds(0.1f);
 		}
+	}
+
+	private IEnumerator PaintCell(Color color)
+	{
+		var baseColor = _cells[0, Height - 1].Color;
+		if (color == baseColor)
+			yield break;
+
+		var arrPaint = new Cell.CellController[Width, Height];
+		var q = new ArrayList();
+		q.Add(_cells[0, Height - 1]);
+		while (q.Count > 0)
+		{
+			var cell = q[0] as Cell.CellController;
+
+			for (int x = cell.X; x >= 0; x--)
+			{
+				if (_cells[x, cell.Y].Color != baseColor)
+					break;
+
+				arrPaint[x, cell.Y] = _cells[x, cell.Y];
+
+				if (cell.Y + 1 < Height)
+					if (arrPaint[x, cell.Y + 1] == null &&
+						_cells[x, cell.Y + 1].Color == baseColor)
+						q.Add(_cells[x, cell.Y + 1]);
+
+				if (cell.Y - 1 >= 0)
+					if (arrPaint[x, cell.Y - 1] == null &&
+						_cells[x, cell.Y - 1].Color == baseColor)
+						q.Add(_cells[x, cell.Y - 1]);
+			}
+
+			for (int x = cell.X; x < Width; x++)
+			{
+				if (_cells[x, cell.Y].Color != baseColor)
+					break;
+
+				arrPaint[x, cell.Y] = _cells[x, cell.Y];
+
+				if (cell.Y + 1 < Height)
+					if (arrPaint[x, cell.Y + 1] == null &&
+						_cells[x, cell.Y + 1].Color == baseColor)
+						q.Add(_cells[x, cell.Y + 1]);
+
+				if (cell.Y - 1 >= 0)
+					if (arrPaint[x, cell.Y - 1] == null &&
+						_cells[x, cell.Y - 1].Color == baseColor)
+						q.Add(_cells[x, cell.Y - 1]);
+			}
+
+			q.Remove(cell);
+		}
+
+		for (int x = 0; x <= Width; x++)
+		{
+			for (int z = 0; z < x; z++)
+			{
+				var y = Height - x + z;
+				if (y >= 0 && arrPaint[z, y] != null)
+					arrPaint[z, y].SetColor(color);
+			}
+			yield return new WaitForSeconds(0.1f);
+		}
+
+		for (int y = Height - 1; y >= 0; y--)
+		{
+			for (int z = 0; z < y; z++)
+			{
+				var x = Width - y + z;
+				if (x >= 0 && arrPaint[x, z] != null)
+					arrPaint[x, z].SetColor(color);
+			}
+			yield return new WaitForSeconds(0.1f);
+		}
+	}
+
+	private void CellMouseDown(object sender, System.EventArgs args)
+	{
+		var cell = sender as Cell.CellController;
+		if (cell == null)
+			return;
+
+		StartCoroutine(PaintCell(cell.Color));
 	}
 
 	private void OnDrawGizmos()
