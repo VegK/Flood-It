@@ -19,10 +19,31 @@ public class FieldController : MonoBehaviour
 
 	#region Methods
 	#region Public
-
+	public void LinkedRestartLevel()
+	{
+		MainInterfaceController.Instance.RestartEvent += new System.EventHandler((s, e) =>
+		{
+			ClearField();
+			CreateField();
+		});
+	}
 	#endregion
 	#region Private
 	private void Start()
+	{
+		CreateField();
+	}
+
+	private void ClearField()
+	{
+		StopAllCoroutines();
+
+		var childsCount = transform.childCount;
+		for (int i = 0; i < childsCount; i++)
+			Destroy(transform.GetChild(i).gameObject);
+	}
+
+	private void CreateField()
 	{
 		var indentX = (float)Width / 2 - 0.5f;
 		var indentY = (float)Height / 2 - 0.5f;
@@ -118,6 +139,8 @@ public class FieldController : MonoBehaviour
 			}
 			yield return new WaitForSeconds(0.1f);
 		}
+
+		GameOver();
 	}
 
 	private Cell.CellController[,] GetPaintArray(Color baseColor, Color newColor)
@@ -189,6 +212,21 @@ public class FieldController : MonoBehaviour
 		StartCoroutine(PaintCell(cell.Color));
 	}
 
+	private void GameOver()
+	{
+		var countColor = 0;
+		var baseColor = _cells[0, Height - 1].Color;
+
+		for (int x = 0; x < Width; x++)
+			for (int y = 0; y < Height; y++)
+				if (_cells[x, y].Color == baseColor)
+					countColor++;
+
+		if (countColor < Width * Height)
+			return;
+
+		MainInterfaceController.Instance.Show();
+	}
 	private void OnDrawGizmos()
 	{
 		Gizmos.color = Color.red;
