@@ -64,7 +64,10 @@ public class FieldController : MonoBehaviour
 			{
 				var y = Height - x + z;
 				if (y >= 0)
-					_cells[z, y].SetColor(arrColor[Random.Range(0, arrColor.Length)]);
+				{
+					_cells[z, y].Color = arrColor[Random.Range(0, arrColor.Length)];
+					_cells[z, y].Flip(_cells[z, y].Color);
+				}
 			}
 			yield return new WaitForSeconds(0.1f);
 		}
@@ -75,7 +78,10 @@ public class FieldController : MonoBehaviour
 			{
 				var x = Width - y + z;
 				if (x >= 0)
-					_cells[x, z].SetColor(arrColor[Random.Range(0, arrColor.Length)]);
+				{
+					_cells[x, z].Color = arrColor[Random.Range(0, arrColor.Length)];
+					_cells[x, z].Flip(_cells[x, z].Color);
+				}
 			}
 			yield return new WaitForSeconds(0.1f);
 		}
@@ -97,7 +103,7 @@ public class FieldController : MonoBehaviour
 			{
 				var y = Height - x + z;
 				if (y >= 0 && arrPaint[z, y] != null)
-					arrPaint[z, y].SetColor(color);
+					arrPaint[z, y].Flip(color);
 			}
 			yield return new WaitForSeconds(0.1f);
 		}
@@ -108,7 +114,7 @@ public class FieldController : MonoBehaviour
 			{
 				var x = Width - y + z;
 				if (x >= 0 && arrPaint[x, z] != null)
-					arrPaint[x, z].SetColor(color);
+					arrPaint[x, z].Flip(color);
 			}
 			yield return new WaitForSeconds(0.1f);
 		}

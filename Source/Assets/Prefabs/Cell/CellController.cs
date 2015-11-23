@@ -27,9 +27,8 @@ namespace Cell
 
 		#region Methods
 		#region Public
-		public void SetColor(Color color)
+		public void Flip(Color color)
 		{
-			Color = color;
 			_color.SetColor(color);
 			_rotation.Rotate(SpeedRotation);
 			TopSide = !TopSide;
