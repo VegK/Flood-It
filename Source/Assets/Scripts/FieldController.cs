@@ -14,6 +14,9 @@ public class FieldController : MonoBehaviour
 	#region Private
 	private Cell.CellController[,] _cells;
 	private bool _lockClick = true;
+
+	private int _steps;
+	private float _timeStart;
 	#endregion
 	#endregion
 
@@ -45,6 +48,9 @@ public class FieldController : MonoBehaviour
 
 	private void CreateField()
 	{
+		_steps = 0;
+		_timeStart = Time.time;
+
 		var indentX = (float)Width / 2 - 0.5f;
 		var indentY = (float)Height / 2 - 0.5f;
 
@@ -209,6 +215,7 @@ public class FieldController : MonoBehaviour
 		if (cell == null)
 			return;
 
+		_steps++;
 		StartCoroutine(PaintCell(cell.Color));
 	}
 
@@ -225,7 +232,8 @@ public class FieldController : MonoBehaviour
 		if (countColor < Width * Height)
 			return;
 
-		MainInterfaceController.Instance.Show();
+		var time = Time.time - _timeStart;
+		MainInterfaceController.Instance.Show(_steps, (int)time);
 	}
 	private void OnDrawGizmos()
 	{

@@ -17,24 +17,24 @@ public class MainInterfaceController : MonoBehaviour
 	{
 		get
 		{
-			return _time;
+			return _steps;
 		}
 		set
 		{
-			_time = value;
-			UISteps.text = "Steps: " + _time;
+			_steps = value;
+			UISteps.text = "Steps: " + _steps;
 		}
 	}
 	public int Time
 	{
 		get
 		{
-			return _steps;
+			return _time;
 		}
 		set
 		{
-			_steps = value;
-			UITime.text = "Time: " + _steps + " sec";
+			_time = value;
+			UITime.text = "Time: " + _time + " sec";
 		}
 	}
 	#endregion
@@ -46,8 +46,10 @@ public class MainInterfaceController : MonoBehaviour
 
 	#region Methods
 	#region Public
-	public void Show()
+	public void Show(int steps, int time)
 	{
+		Steps = steps;
+		Time = time;
 		gameObject.SetActive(true);
 	}
 
