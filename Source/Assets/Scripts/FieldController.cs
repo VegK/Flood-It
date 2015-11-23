@@ -86,51 +86,7 @@ public class FieldController : MonoBehaviour
 		if (color == baseColor)
 			yield break;
 
-		var arrPaint = new Cell.CellController[Width, Height];
-		var q = new ArrayList();
-		q.Add(_cells[0, Height - 1]);
-		while (q.Count > 0)
-		{
-			var cell = q[0] as Cell.CellController;
-
-			for (int x = cell.X; x >= 0; x--)
-			{
-				if (_cells[x, cell.Y].Color != baseColor)
-					break;
-
-				arrPaint[x, cell.Y] = _cells[x, cell.Y];
-
-				if (cell.Y + 1 < Height)
-					if (arrPaint[x, cell.Y + 1] == null &&
-						_cells[x, cell.Y + 1].Color == baseColor)
-						q.Add(_cells[x, cell.Y + 1]);
-
-				if (cell.Y - 1 >= 0)
-					if (arrPaint[x, cell.Y - 1] == null &&
-						_cells[x, cell.Y - 1].Color == baseColor)
-						q.Add(_cells[x, cell.Y - 1]);
-			}
-
-			for (int x = cell.X; x < Width; x++)
-			{
-				if (_cells[x, cell.Y].Color != baseColor)
-					break;
-
-				arrPaint[x, cell.Y] = _cells[x, cell.Y];
-
-				if (cell.Y + 1 < Height)
-					if (arrPaint[x, cell.Y + 1] == null &&
-						_cells[x, cell.Y + 1].Color == baseColor)
-						q.Add(_cells[x, cell.Y + 1]);
-
-				if (cell.Y - 1 >= 0)
-					if (arrPaint[x, cell.Y - 1] == null &&
-						_cells[x, cell.Y - 1].Color == baseColor)
-						q.Add(_cells[x, cell.Y - 1]);
-			}
-
-			q.Remove(cell);
-		}
+		var arrPaint = GetPaintArray(baseColor, color);
 
 		for (int x = 0; x <= Width; x++)
 		{
@@ -153,6 +109,63 @@ public class FieldController : MonoBehaviour
 			}
 			yield return new WaitForSeconds(0.1f);
 		}
+	}
+
+	private Cell.CellController[,] GetPaintArray(Color baseColor, Color newColor)
+	{
+		var arrPaint = new Cell.CellController[Width, Height];
+		var cells = new ArrayList();
+
+		cells.Add(_cells[0, Height - 1]);
+		while (cells.Count > 0)
+		{
+			var cell = cells[0] as Cell.CellController;
+
+			for (int x = cell.X; x >= 0; x--)
+			{
+				if (_cells[x, cell.Y].Color != baseColor)
+					break;
+
+				arrPaint[x, cell.Y] = _cells[x, cell.Y];
+
+				if (cell.Y + 1 < Height)
+					if (arrPaint[x, cell.Y + 1] == null &&
+						_cells[x, cell.Y + 1].Color == baseColor)
+						cells.Add(_cells[x, cell.Y + 1]);
+
+				if (cell.Y - 1 >= 0)
+					if (arrPaint[x, cell.Y - 1] == null &&
+						_cells[x, cell.Y - 1].Color == baseColor)
+						cells.Add(_cells[x, cell.Y - 1]);
+			}
+
+			for (int x = cell.X; x < Width; x++)
+			{
+				if (_cells[x, cell.Y].Color != baseColor)
+					break;
+
+				arrPaint[x, cell.Y] = _cells[x, cell.Y];
+
+				if (cell.Y + 1 < Height)
+					if (arrPaint[x, cell.Y + 1] == null &&
+						_cells[x, cell.Y + 1].Color == baseColor)
+						cells.Add(_cells[x, cell.Y + 1]);
+
+				if (cell.Y - 1 >= 0)
+					if (arrPaint[x, cell.Y - 1] == null &&
+						_cells[x, cell.Y - 1].Color == baseColor)
+						cells.Add(_cells[x, cell.Y - 1]);
+			}
+
+			cells.Remove(cell);
+		}
+
+		for (int x = 0; x < Width; x++)
+			for (int y = 0; y < Height; y++)
+				if (arrPaint[x, y] != null)
+					arrPaint[x, y].Color = newColor;
+
+		return arrPaint;
 	}
 
 	private void CellMouseDown(object sender, System.EventArgs args)

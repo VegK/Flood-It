@@ -15,7 +15,7 @@ namespace Cell
 		public float SpeedRotation = 120f;
 		
 		public bool TopSide { get; private set; }
-		public Color Color { get; private set; }
+		public Color Color { get; set; }
 		public int X { get; set; }
 		public int Y { get; set; }
 		#endregion
