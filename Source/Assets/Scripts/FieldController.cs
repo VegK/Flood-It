@@ -13,6 +13,7 @@ public class FieldController : MonoBehaviour
 	#endregion
 	#region Private
 	private Cell.CellController[,] _cells;
+	private bool _lockClick = true;
 	#endregion
 	#endregion
 
@@ -78,6 +79,8 @@ public class FieldController : MonoBehaviour
 			}
 			yield return new WaitForSeconds(0.1f);
 		}
+
+		_lockClick = false;
 	}
 
 	private IEnumerator PaintCell(Color color)
@@ -170,6 +173,9 @@ public class FieldController : MonoBehaviour
 
 	private void CellMouseDown(object sender, System.EventArgs args)
 	{
+		if (_lockClick)
+			return;
+
 		var cell = sender as Cell.CellController;
 		if (cell == null)
 			return;
